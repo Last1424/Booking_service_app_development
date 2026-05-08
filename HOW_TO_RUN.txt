@@ -1,0 +1,184 @@
+================================================================
+COURT BOOKING SYSTEM - HOW TO RUN & TEST
+================================================================
+
+This document covers:
+  1. How to run the app locally
+  2. How to test the ADMIN side
+  3. How to test the CLIENT (player) side
+
+----------------------------------------------------------------
+1) HOW TO RUN THE APP LOCALLY
+----------------------------------------------------------------
+
+PREREQUISITES (one-time setup, already done on this machine)
+  - MySQL Server 8.0 installed and running as service "MySQL80"
+  - Python 3.12+ installed
+  - Database "court_booking" created
+  - Python dependencies installed (pip install -r backend/requirements.txt)
+  - backend/.env file exists with DB_PASSWORD set
+
+EVERY TIME YOU WANT TO USE THE APP:
+
+Step 1 - Make sure MySQL is running
+  - Press Win + R, type "services.msc", press Enter
+  - Find "MySQL80" in the list -> status should be "Running"
+  - If not running: right-click MySQL80 -> Start
+  (MySQL is set to auto-start with Windows, so usually nothing to do)
+
+Step 2 - Start the Flask backend server
+  - Open a terminal (Command Prompt, PowerShell, or Git Bash)
+  - Run these commands:
+        cd "C:\Users\hacke\OneDrive\Documents\UNi\Year2\App_dev\Booking project\backend"
+        python run.py
+  - You should see: "Running on http://0.0.0.0:5000"
+  - LEAVE THIS TERMINAL OPEN while using the app
+
+Step 3 - Open the frontend
+  - Open File Explorer
+  - Navigate to: Booking project\frontend\
+  - Double-click: index.html
+  - The login page opens in your default browser
+
+TO STOP THE APP:
+  - In the Flask terminal: press Ctrl + C
+  - Close the browser tab
+  - MySQL can keep running in the background (harmless)
+
+IF SOMETHING DOESN'T WORK:
+  - Check terminal for error messages
+  - Verify MySQL80 service is "Running"
+  - Verify backend/.env has correct DB_PASSWORD
+  - Visit http://localhost:5000/api/health in your browser
+    -> should return {"status":"ok"}
+
+----------------------------------------------------------------
+2) HOW TO TEST THE ADMIN SIDE
+----------------------------------------------------------------
+
+ADMIN LOGIN
+  Email:    admin@court.local
+  Password: admin123
+
+After login you go straight to the Admin dashboard.
+
+------ TAB: BOOKINGS ------
+What to test:
+  [a] At the top, see 4 stats cards: Users, Courts, Confirmed bookings, Upcoming
+  [b] Filter dropdown: switch between "All", "Upcoming", "Confirmed"
+  [c] Find any upcoming booking -> click "Cancel"
+       -> confirm the popup
+       -> the row's status changes to "cancelled"
+       -> stats counter updates
+
+------ TAB: USERS ------
+What to test:
+  [a] Should see at least 2 users (Admin + Demo Player)
+  [b] If you signed up new accounts earlier, they appear here
+  [c] Verify roles: admin shows blue "admin" badge
+
+------ TAB: COURTS ------
+What to test:
+  [a] See 5 seeded courts (2 tennis, 2 badminton, 1 pickleball)
+  [b] Change a court's hourly rate (e.g. Tennis Court 1 from $20 to $25)
+       -> click "Save"
+       -> open booking.html as a player -> the new price is reflected
+  [c] CLOSE A COURT FOR MAINTENANCE:
+       -> change Status dropdown to "closed" -> Save
+       -> as a player, that court will show "closed" and slots become unavailable
+  [d] ADD A NEW COURT:
+       -> fill the "Add a court" form (e.g. "Tennis Court 3", tennis, $22)
+       -> click "Add court"
+       -> appears in the list AND in the player's court dropdown
+
+------ TAB: EQUIPMENT ------
+What to test:
+  [a] See 6 seeded items (rackets/balls for each sport)
+  [b] CHANGE STOCK: edit a stock number, click Save
+       -> as a player, max quantity is enforced when booking
+  [c] CHANGE PRICE: edit hourly rate, Save
+       -> player sees new price in booking modal
+  [d] ADD NEW ITEM: fill the "Add equipment" form, submit
+       -> appears immediately in the list
+  [e] DELETE ITEM: click "Delete" on a row, confirm
+
+------ TAB: NOTIFICATIONS ------
+What to test:
+  [a] Empty initially (until someone books or cancels)
+  [b] After a booking is created, 2 entries appear:
+       - 1 email log
+       - 1 SMS log
+       (these are MOCK - logged to DB and console only, no real send)
+  [c] After a cancellation, 2 more entries appear
+
+----------------------------------------------------------------
+3) HOW TO TEST THE CLIENT (PLAYER) SIDE
+----------------------------------------------------------------
+
+OPTION A - Use the seeded demo player
+  Email:    player@court.local
+  Password: player123
+
+OPTION B - Sign up a new account
+  - On login page, click "Sign up"
+  - Fill: name, email, password (min 6 chars), phone (optional)
+  - Submit -> auto-logged in -> sent to booking page
+
+------ BOOKING FLOW ------
+What to test:
+  [a] Sport selector: switch between Tennis / Badminton / Pickleball
+       -> court dropdown updates with that sport's courts
+  [b] Court selector: pick a court
+       -> court info line shows name, sport badge, rate, status
+  [c] Date picker: defaults to today, can pick future dates
+       -> can NOT pick past dates (input min = today)
+  [d] Slot grid (08:00 - 22:00, 14 slots/day):
+       -> green/clickable = available
+       -> grey/strikethrough = booked, past, or court closed
+  [e] Click an available slot -> modal opens
+  [f] Modal shows:
+       -> court name + sport badge
+       -> date/time
+       -> court rate
+       -> equipment list (filtered to that sport)
+       -> live total at bottom
+  [g] Increase equipment quantity -> total updates live
+  [h] Click "Confirm booking"
+       -> success message at top of page
+       -> the slot turns grey/booked
+       -> equipment stock decreased
+       -> 2 mock notifications logged (visible to admin)
+
+------ MY BOOKINGS PAGE ------
+What to test (top nav -> "My Bookings"):
+  [a] See your booking listed with court, sport, time, equipment, total, status
+  [b] Upcoming bookings show a "Cancel" button
+  [c] Past bookings have NO cancel button (cannot cancel past slots)
+  [d] Click Cancel -> confirm -> status changes to "cancelled"
+       -> equipment stock auto-restored on the admin side
+
+------ ERROR CASES TO TRY ------
+  [a] Try to book a slot, then book the SAME slot again
+       -> error: "That slot is already booked"
+  [b] Set equipment qty higher than stock
+       -> error: "Not enough stock for X"
+  [c] Logout and try to visit booking.html directly
+       -> redirected to login page
+  [d] Login as player, try to visit admin.html
+       -> redirected back to dashboard
+
+----------------------------------------------------------------
+HELPFUL URLS
+----------------------------------------------------------------
+  Frontend:        Open frontend/index.html in browser
+  Backend health:  http://localhost:5000/api/health
+  Sports list:     http://localhost:5000/api/courts/sports
+  All courts:      http://localhost:5000/api/courts
+
+----------------------------------------------------------------
+DEMO ACCOUNTS (created by seed.py)
+----------------------------------------------------------------
+  ADMIN  -> admin@court.local  / admin123
+  PLAYER -> player@court.local / player123
+
+================================================================
