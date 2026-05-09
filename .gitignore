@@ -26,3 +26,8 @@ desktop.ini
 
 # Claude Code local data
 .claude/
+
+# Node / Vite
+node_modules/
+dist/
+.vite/

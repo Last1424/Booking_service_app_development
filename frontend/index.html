@@ -1,54 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CourtBook — Login</title>
-  <link rel="stylesheet" href="css/styles.css" />
-</head>
-<body>
-  <div id="navbar"></div>
-  <div class="auth-wrap">
-    <div class="card auth-card">
-      <h2>Sign in</h2>
-      <p class="muted">Welcome back. Book your court in seconds.</p>
-      <div id="alert"></div>
-      <form id="loginForm">
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" required autocomplete="email" />
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" required autocomplete="current-password" />
-        </div>
-        <button type="submit" class="btn btn-primary btn-block">Sign in</button>
-      </form>
-      <p class="center muted" style="margin-top:14px;font-size:13px;">
-        Don't have an account? <a href="signup.html">Sign up</a>
-      </p>
-    </div>
-  </div>
-
-  <script src="js/api.js"></script>
-  <script>
-    mountNavbar("login");
-    if (Auth.token && Auth.user) {
-      window.location.href = Auth.user.role === "admin" ? "admin.html" : "booking.html";
-    }
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
-      try {
-        const data = await api("/auth/login", { method: "POST", body: { email, password }, auth: false });
-        Auth.token = data.token;
-        Auth.user = data.user;
-        window.location.href = data.user.role === "admin" ? "admin.html" : "booking.html";
-      } catch (err) {
-        showAlert("alert", err.message);
-      }
-    });
-  </script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CourtBook</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>

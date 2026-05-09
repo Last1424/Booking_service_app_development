@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CourtBook — Admin</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="navbar"></div>
+  <div class="container">
+    <div id="alert"></div>
+
+    <div id="stats" class="stat-grid"></div>
+
+    <div class="card">
+      <div class="tabs">
+        <div class="tab active" data-tab="bookings">Bookings</div>
+        <div class="tab" data-tab="users">Users</div>
+        <div class="tab" data-tab="courts">Courts</div>
+        <div class="tab" data-tab="equipment">Equipment</div>
+        <div class="tab" data-tab="notifications">Notifications</div>
+      </div>
+
+      <div id="tab-bookings" class="tab-panel">
+        <div class="toolbar">
+          <div class="form-group">
+            <label for="bookingScope">Filter</label>
+            <select id="bookingScope">
+              <option value="all">All bookings</option>
+              <option value="upcoming" selected>Upcoming</option>
+              <option value="active">Confirmed (incl. past)</option>
+            </select>
+          </div>
+        </div>
+        <div id="bookingsTable"></div>
+      </div>
+
+      <div id="tab-users" class="tab-panel hidden">
+        <div id="usersTable"></div>
+      </div>
+
+      <div id="tab-courts" class="tab-panel hidden">
+        <h3>Courts</h3>
+        <div id="courtsTable"></div>
+        <h3 style="margin-top:24px;">Add a court</h3>
+        <form id="courtForm" class="row">
+          <div class="form-group">
+            <label>Name</label>
+            <input id="cName" required />
+          </div>
+          <div class="form-group">
+            <label>Sport</label>
+            <select id="cSport">
+              <option value="tennis">Tennis</option>
+              <option value="badminton">Badminton</option>
+              <option value="pickleball">Pickleball</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Hourly rate ($)</label>
+            <input id="cRate" type="number" step="0.01" min="0" required />
+          </div>
+          <div class="form-group" style="display:flex;align-items:end;">
+            <button class="btn btn-primary" type="submit">Add court</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="tab-equipment" class="tab-panel hidden">
+        <h3>Equipment</h3>
+        <div id="equipmentTable"></div>
+        <h3 style="margin-top:24px;">Add equipment</h3>
+        <form id="equipmentForm" class="row">
+          <div class="form-group">
+            <label>Name</label>
+            <input id="eName" required />
+          </div>
+          <div class="form-group">
+            <label>Sport</label>
+            <select id="eSport">
+              <option value="tennis">Tennis</option>
+              <option value="badminton">Badminton</option>
+              <option value="pickleball">Pickleball</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Stock</label>
+            <input id="eStock" type="number" min="0" value="0" required />
+          </div>
+          <div class="form-group">
+            <label>Hourly rate ($)</label>
+            <input id="eRate" type="number" step="0.01" min="0" value="0" required />
+          </div>
+          <div class="form-group" style="display:flex;align-items:end;">
+            <button class="btn btn-primary" type="submit">Add</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="tab-notifications" class="tab-panel hidden">
+        <p class="muted">Mock email/SMS notifications (last 100). In production these would go to a real provider.</p>
+        <div id="notificationsTable"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

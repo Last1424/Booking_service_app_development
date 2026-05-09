@@ -3,8 +3,9 @@
 A full-stack court booking prototype for **Tennis · Badminton · Pickleball**.
 
 - **Backend:** Python Flask + SQLAlchemy + JWT, MySQL 8
-- **Frontend:** Plain HTML + CSS + vanilla JavaScript (no build tools)
-- **Architecture:** REST API (Flask) + static frontend talks via `fetch`
+- **Frontend:** React 18 (built with Vite), plain CSS, hash-based routing (no React Router)
+- **Architecture:** REST API (Flask) + React SPA, talks via `fetch`
+- A vanilla HTML/JS version is preserved in `frontend-vanilla/` for reference.
 
 ## Features
 
