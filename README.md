@@ -24,6 +24,12 @@ A full-stack court booking prototype for **Tennis · Badminton · Pickleball**.
 - Add / edit / delete equipment, manage stock & pricing
 - View mock email/SMS notification log
 
+## Prerequisites
+
+- **Python 3.10+** — for the Flask backend
+- **Node.js 18+ and npm** — for the React frontend
+- **MySQL Server 8** — running locally (default port 3306)
+
 ## Setup
 
 ### 1. Database (MySQL)
@@ -48,10 +54,19 @@ python run.py                # starts http://localhost:5000
 
 Smoke test: open `http://localhost:5000/api/health` — should return `{"status":"ok"}`.
 
-### 3. Frontend
+### 3. Frontend (React + Vite)
 
-Open `frontend/index.html` in your browser. (Any static file server also works:
-`cd frontend && python -m http.server 5500` then visit `http://localhost:5500`.)
+```bash
+cd frontend
+npm install                  # one-time, installs react + vite
+npm run dev                  # starts http://localhost:5173
+```
+
+Vite will open the browser automatically. If not, visit `http://localhost:5173` manually.
+
+**You need TWO terminals running:** one for Flask (backend, port 5000) and one for Vite (frontend, port 5173).
+
+To build a production bundle: `npm run build` (outputs to `frontend/dist/`).
 
 ## Demo accounts (from `seed.py`)
 
@@ -80,18 +95,30 @@ backend/
 ├── requirements.txt
 ├── .env.example
 └── run.py                   entrypoint
-frontend/
-├── index.html               login
-├── signup.html
-├── booking.html             calendar + slot picker
-├── dashboard.html           my bookings
-├── admin.html               admin (tabs)
-├── css/styles.css
-└── js/
-    ├── api.js               fetch wrapper, auth, navbar, helpers
-    ├── booking.js
-    ├── dashboard.js
-    └── admin.js
+frontend/                    React 18 + Vite
+├── index.html               Vite entry (loads /src/main.jsx)
+├── package.json             react, react-dom, vite
+├── vite.config.js
+└── src/
+    ├── main.jsx             renders <App />
+    ├── App.jsx              hash-route switcher + auth guards
+    ├── pages/
+    │   ├── Login.jsx
+    │   ├── Signup.jsx
+    │   ├── Booking.jsx      sport/court/date picker + slot grid + booking modal
+    │   ├── Dashboard.jsx    "my bookings" + cancel
+    │   └── Admin.jsx        tabs: bookings, users, courts, equipment, notifications
+    ├── components/
+    │   ├── Navbar.jsx
+    │   └── Alert.jsx
+    ├── lib/
+    │   ├── api.js           fetch wrapper
+    │   ├── AuthContext.jsx  useAuth() hook (token + user in localStorage)
+    │   ├── router.js        useHashRoute() + navigate()  (tiny custom router, no react-router)
+    │   └── helpers.js       date/time formatters
+    └── styles/styles.css
+
+frontend-vanilla/            Original plain HTML/CSS/JS version (kept as backup)
 ```
 
 ## API surface
