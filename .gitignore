@@ -24,7 +24,7 @@ desktop.ini
 # Logs
 *.log
 
-# Claude Code local data
+# Local tool data
 .claude/
 
 # Node / Vite
